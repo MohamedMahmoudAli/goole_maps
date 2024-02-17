@@ -35,6 +35,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   Set<Marker>myMarkers={};
   Set<Polyline>myPolylines={};
     Set<Polygon>myPolygn={};
+    // Set<Polygon>myCenters={};
 
   late GoogleMapController googleMapController;
   @override
