@@ -23,6 +23,8 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
         // initMapStyle(); 
         initMarkers();
         initpolyines();
+                initpolygns();
+
     super.initState();
   }
   @override
@@ -32,14 +34,17 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   }
   Set<Marker>myMarkers={};
   Set<Polyline>myPolylines={};
+    Set<Polygon>myPolygn={};
+
   late GoogleMapController googleMapController;
   @override
   Widget build(BuildContext context) {
     return  Stack(
       children: [
         GoogleMap(
-          polylines: myPolylines,
+          // polylines: myPolylines,
           // markers: myMarkers,
+          polygons: myPolygn,
           zoomControlsEnabled: false,
          //mapType: MapType.terrain,
           onMapCreated:(controller) {
@@ -122,11 +127,13 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     );
     myPolylines.add(polyline);
     Polyline polyline2=const Polyline(
+      //to make the line like curve 
       geodesic: true,
       patterns: [
         PatternItem.dot
       ],
       polylineId: PolylineId("2"),
+      //the lowest value draw first 
       zIndex: 1,
       color: Colors.green,
       startCap: Cap.roundCap,
@@ -138,6 +145,28 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
       ]
     );
     myPolylines.add(polyline2);
+  }
+  
+  void initpolygns() {
+    Polygon polygon= Polygon(polygonId: const PolygonId("1"),
+    // strokeColor: Colors.red,
+    fillColor: Colors.black.withOpacity(.5),
+    points: const [
+        LatLng(31.330850680097512, 30.077394967526413),
+        LatLng(31.165197355884843, 29.81563264422966),
+        LatLng(31.118261619430957, 30.126384005685303),
+
+      ],
+      holes: const [
+        [
+          LatLng(31.22946093522103, 29.97278441270375),
+          LatLng(31.215441195798338, 29.939067905270303),
+          LatLng(31.177339331182615, 30.021039230681893)
+        ]
+      
+    ],
+    );
+    myPolygn.add(polygon);
   }
 }
 
