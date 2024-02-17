@@ -62,6 +62,9 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     );
   }
   
+
+
+  // to change the size of the image
   Future<Uint8List>getImageFromRawData(String image,int width)async{
     var imageData=await rootBundle.load(image);
     var imageCodec= await ui.instantiateImageCodec(imageData.buffer.asUint8List(),targetWidth: width.round());
@@ -69,6 +72,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
      var imagebytedata=await imageframe.image.toByteData(format: ui.ImageByteFormat.png);
      return imagebytedata!.buffer.asUint8List();
   }
+  // to use customize style for map
   void initMapStyle()async {
     var nightMapStyle=await DefaultAssetBundle
     .of(context)
@@ -77,7 +81,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
 
 
   }
-  
+  // to make markers in the map
   void initMarkers()async {
     // var myMarker=const Marker(markerId: MarkerId("1"),position: LatLng(31.227212467987233, 29.97218040398892));
     // Markers.add(myMarker);
