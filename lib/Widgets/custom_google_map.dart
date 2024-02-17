@@ -10,26 +10,22 @@ class CustomGoogleMapState extends StatefulWidget {
 
 class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   late  CameraPosition initalcameraPosition;
-  // late  CameraPosition cameraPosition;
-
-   
-
   @override
   void initState() {
       initalcameraPosition=   const CameraPosition(
         zoom: 10.0,
-         
         target: LatLng(31.227212467987233, 29.97218040398892)
         );
+        // initmapstyle(); 
     super.initState();
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     googleMapController.dispose();
     super.dispose();
   }
   late GoogleMapController googleMapController;
+  @override
   Widget build(BuildContext context) {
     return  Stack(
       children: [
@@ -38,20 +34,15 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
           mapType: MapType.terrain,
           onMapCreated:(controller) {
             googleMapController=controller;
+            initmapstyle(); 
           },
-          // cameraTargetBounds: CameraTargetBounds(
-          //   LatLngBounds(northeast:LatLng(31.304149778817113, 30.129218078926055)
-          //  ,southwest:LatLng(31.098571048514753, 29.785458778301486) )
-          //  ),
           initialCameraPosition:initalcameraPosition 
-          
             ),
             Positioned(
               left: 16,
               right: 16,
               bottom: 16,
               child: ElevatedButton(onPressed: (){
-                
                 googleMapController.animateCamera(
                   CameraUpdate.newLatLng(
                     const LatLng(30.317763810885676, 31.191159289815076)));
@@ -62,7 +53,18 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
       ],
     );
   }
+  
+  void initmapstyle()async {
+    var nightMapStyle=await DefaultAssetBundle
+    .of(context)
+    .loadString('assets/mapstyles/nightmapstyle/nightmapstyle.json');
+    googleMapController.setMapStyle(nightMapStyle);
+
+
+  }
 }
+
+
 // world view 0 -> 3
 //country view 4 -> 6
 //city view 10 ->12
