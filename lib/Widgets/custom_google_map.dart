@@ -34,6 +34,8 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     return  Stack(
       children: [
         GoogleMap(
+          zoomControlsEnabled: false,
+          mapType: MapType.terrain,
           onMapCreated:(controller) {
             googleMapController=controller;
           },
@@ -50,11 +52,13 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
               bottom: 16,
               child: ElevatedButton(onPressed: (){
                 
-                googleMapController.animateCamera(CameraUpdate.newLatLng(LatLng(30.317763810885676, 31.191159289815076)));
+                googleMapController.animateCamera(
+                  CameraUpdate.newLatLng(
+                    const LatLng(30.317763810885676, 31.191159289815076)));
                  setState(() {
                   
                 });
-              }, child: Text("change the postion ")))
+              }, child: const Text("change the postion ")))
       ],
     );
   }
