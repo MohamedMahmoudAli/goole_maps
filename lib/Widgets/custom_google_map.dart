@@ -1,5 +1,9 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_maps/models/models.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:ui'as ui;
 
 class CustomGoogleMapState extends StatefulWidget {
   const CustomGoogleMapState({super.key});
@@ -9,14 +13,15 @@ class CustomGoogleMapState extends StatefulWidget {
 }
 
 class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
-  late  CameraPosition initalcameraPosition;
+  late  CameraPosition initalCameraPosition;
   @override
   void initState() {
-      initalcameraPosition=   const CameraPosition(
+      initalCameraPosition=   const CameraPosition(
         zoom: 10.0,
         target: LatLng(31.227212467987233, 29.97218040398892)
         );
-        // initmapstyle(); 
+        // initMapStyle(); 
+        initMarkers();
     super.initState();
   }
   @override
@@ -24,19 +29,22 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     googleMapController.dispose();
     super.dispose();
   }
+  Set<Marker>myMarkers={};
   late GoogleMapController googleMapController;
   @override
   Widget build(BuildContext context) {
     return  Stack(
       children: [
         GoogleMap(
+          zoomGesturesEnabled: false,
+          markers: myMarkers,
           zoomControlsEnabled: false,
-          mapType: MapType.terrain,
+//mapType: MapType.terrain,
           onMapCreated:(controller) {
             googleMapController=controller;
-            initmapstyle(); 
+            initMapStyle(); 
           },
-          initialCameraPosition:initalcameraPosition 
+          initialCameraPosition:initalCameraPosition 
             ),
             Positioned(
               left: 16,
@@ -54,7 +62,14 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     );
   }
   
-  void initmapstyle()async {
+  Future<Uint8List>getImageFromRawData(String image,int width)async{
+    var imageData=await rootBundle.load(image);
+    var imageCodec= await ui.instantiateImageCodec(imageData.buffer.asUint8List(),targetWidth: width.round());
+     var imageframe =await imageCodec.getNextFrame();
+     var imagebytedata=await imageframe.image.toByteData(format: ui.ImageByteFormat.png);
+     return imagebytedata!.buffer.asUint8List();
+  }
+  void initMapStyle()async {
     var nightMapStyle=await DefaultAssetBundle
     .of(context)
     .loadString('assets/mapstyles/nightmapstyle/nightmapstyle.json');
@@ -62,7 +77,29 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
 
 
   }
+  
+  void initMarkers()async {
+    // var myMarker=const Marker(markerId: MarkerId("1"),position: LatLng(31.227212467987233, 29.97218040398892));
+    // Markers.add(myMarker);
+    var customMarkerIcon= BitmapDescriptor.fromBytes(
+      await getImageFromRawData(
+        "assets/mapstyles/nightmapstyle/images/download.png",50)
+     );
+    var markers=modles.map(
+      (placeModel) => Marker(
+        icon:customMarkerIcon,
+        infoWindow: InfoWindow(
+          title: placeModel.name,
+        ),
+        markerId:MarkerId(placeModel.id.toString()),
+        position: placeModel.latlng)
+        ).toSet();
+        myMarkers.addAll(markers);
+        setState(() {});
+        
+  }
 }
+
 
 
 // world view 0 -> 3
@@ -70,3 +107,9 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
 //city view 10 ->12
 //street view 13->17
 //buildings view 18 ->20
+
+
+
+
+
+
