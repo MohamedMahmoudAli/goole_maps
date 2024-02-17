@@ -23,7 +23,9 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
         // initMapStyle(); 
         initMarkers();
         initpolyines();
-                initpolygns();
+        initpolygns();
+        initCirecles();
+
 
     super.initState();
   }
@@ -35,7 +37,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   Set<Marker>myMarkers={};
   Set<Polyline>myPolylines={};
     Set<Polygon>myPolygn={};
-    // Set<Polygon>myCenters={};
+    Set<Circle>myCircels={};
 
   late GoogleMapController googleMapController;
   @override
@@ -43,6 +45,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     return  Stack(
       children: [
         GoogleMap(
+          circles:myCircels,
           // polylines: myPolylines,
           // markers: myMarkers,
           polygons: myPolygn,
@@ -168,6 +171,16 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     ],
     );
     myPolygn.add(polygon);
+  }
+  
+  void initCirecles() {
+    var circle= Circle(circleId: CircleId("1"),
+    center: LatLng(30.31546568720548, 31.188943683331996),
+    radius: 500.0,
+    fillColor: Colors.black.withOpacity(.5)
+
+    );
+    myCircels.add(circle);
   }
 }
 
