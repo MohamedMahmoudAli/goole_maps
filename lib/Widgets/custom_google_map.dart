@@ -1,5 +1,4 @@
 
-import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,16 +33,16 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   }
   @override
   void dispose() {
-    googleMapController.dispose();
+    googleMapController!.dispose();
     super.dispose();
   }
   Set<Marker>myMarkers={};
   Set<Polyline>myPolylines={};
-    Set<Polygon>myPolygn={};
-    Set<Circle>myCircels={};
-    late Location location;
+  Set<Polygon>myPolygn={};
+  Set<Circle>myCircels={};
+  late Location location;
 
-  late GoogleMapController googleMapController;
+   GoogleMapController? googleMapController;
   @override
   Widget build(BuildContext context) {
     return  Stack(
@@ -66,7 +65,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
               right: 16,
               bottom: 16,
               child: ElevatedButton(onPressed: (){
-                googleMapController.animateCamera(
+                googleMapController!.animateCamera(
                   CameraUpdate.newLatLng(
                     const LatLng(30.317763810885676, 31.191159289815076)));
                  setState(() {
@@ -92,7 +91,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     var nightMapStyle=await DefaultAssetBundle
     .of(context)
     .loadString('assets/mapstyles/nightmapstyle/nightmapstyle.json');
-    googleMapController.setMapStyle(nightMapStyle);
+    googleMapController!.setMapStyle(nightMapStyle);
 
 
   }
@@ -216,7 +215,7 @@ Future< bool> checkAndRequestLocationPremission() async{
 void getLocationData() {
  location.onLocationChanged.listen((location) {
     CameraPosition cameraPosition=CameraPosition(target: LatLng(location.latitude!, location.longitude!));
-    googleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    googleMapController?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
   });
 
