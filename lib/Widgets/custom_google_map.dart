@@ -1,4 +1,6 @@
 
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps/models/models.dart';
@@ -195,14 +197,21 @@ if(!isServicedEnabled){
   }
 checkAndRequestLocationPremission();
 }
-Future< void> checkAndRequestLocationPremission() async{
+Future< bool> checkAndRequestLocationPremission() async{
   var permissionStatus=await location.hasPermission();
+  if(permissionStatus==PermissionStatus.deniedForever){
+    return false;
+  }
   if(permissionStatus==PermissionStatus.denied){
     permissionStatus=await location.requestPermission();
     if(permissionStatus!=PermissionStatus.granted){
-    // TODO: Error Bar
+      return false;
+  }else{
+    return true;
   }
+  
   }
+    return true;
 }
 void getLocationData() {
               location.onLocationChanged.listen((location) { });
@@ -212,9 +221,12 @@ void getLocationData() {
 
   void setMyLocation() async{
     await checkAndRequestLocationService();
-    await checkAndRequestLocationPremission();
+    var hasPermission= await checkAndRequestLocationPremission();
+    if(hasPermission){
      getLocationData();
   }
+  }
+
 }
 
 
