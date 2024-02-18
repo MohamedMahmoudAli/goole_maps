@@ -214,7 +214,9 @@ Future< bool> checkAndRequestLocationPremission() async{
 }
 void getLocationData() {
  location.onLocationChanged.listen((location) {
-    CameraPosition cameraPosition=CameraPosition(target: LatLng(location.latitude!, location.longitude!));
+    CameraPosition cameraPosition=CameraPosition(
+      zoom: 15,
+      target: LatLng(location.latitude!, location.longitude!));
     googleMapController?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
   });
