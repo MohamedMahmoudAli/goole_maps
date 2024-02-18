@@ -55,7 +55,6 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
           onMapCreated:(controller) {
             googleMapController=controller;
             initMapStyle(); 
-            location.onLocationChanged.listen((location) { });
           },
           initialCameraPosition:initalCameraPosition 
             ),
@@ -203,6 +202,11 @@ void checkAndRequestLocationPremission() async{
     // TODO: Error Bar
   }
   }
+}
+void getLocationData(){
+              location.onLocationChanged.listen((location) { });
+
+
 }
 }
 
