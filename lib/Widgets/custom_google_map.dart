@@ -55,6 +55,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
           onMapCreated:(controller) {
             googleMapController=controller;
             initMapStyle(); 
+            location.onLocationChanged.listen((location) { });
           },
           initialCameraPosition:initalCameraPosition 
             ),
@@ -186,14 +187,13 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   
   void checkAndRequestLocationService() async{
     var isServicedEnabled=await location.serviceEnabled();
-    if(!isServicedEnabled)
-{
+    if(!isServicedEnabled){
 isServicedEnabled=await location.requestService();
-if(!isServicedEnabled)
-{
+if(!isServicedEnabled){
 // to Do
-} 
-}
+  } 
+  }
+checkAndRequestLocationPremission();
 }
 void checkAndRequestLocationPremission() async{
   var permissionStatus=await location.hasPermission();
