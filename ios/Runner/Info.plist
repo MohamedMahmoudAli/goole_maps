@@ -17,6 +17,8 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
+	<string>this app is yse location to display the curren location of the user </string>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
