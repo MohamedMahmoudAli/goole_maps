@@ -5,6 +5,8 @@ import 'package:google_maps/models/models.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui'as ui;
 
+import 'package:location/location.dart';
+
 class CustomGoogleMapState extends StatefulWidget {
   const CustomGoogleMapState({super.key});
 
@@ -21,12 +23,10 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
         target: LatLng(31.227212467987233, 29.97218040398892)
         );
         // initMapStyle(); 
-        initMarkers();
-        initpolyines();
-        initpolygns();
-        initCirecles();
+        // initMarkers();
+        location=Location();
 
-
+        checkAndRequestLocationService();
     super.initState();
   }
   @override
@@ -38,6 +38,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   Set<Polyline>myPolylines={};
     Set<Polygon>myPolygn={};
     Set<Circle>myCircels={};
+    late Location location;
 
   late GoogleMapController googleMapController;
   @override
@@ -174,14 +175,35 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   }
   
   void initCirecles() {
-    var circle= Circle(circleId: CircleId("1"),
-    center: LatLng(30.31546568720548, 31.188943683331996),
+    var circle= Circle(circleId: const CircleId("1"),
+    center: const LatLng(30.31546568720548, 31.188943683331996),
     radius: 500.0,
     fillColor: Colors.black.withOpacity(.5)
 
     );
     myCircels.add(circle);
   }
+  
+  void checkAndRequestLocationService() async{
+    var isServicedEnabled=await location.serviceEnabled();
+    if(!isServicedEnabled)
+{
+isServicedEnabled=await location.requestService();
+if(!isServicedEnabled)
+{
+// to Do
+} 
+}
+}
+void checkAndRequestLocationPremission() async{
+  var permissionStatus=await location.hasPermission();
+  if(permissionStatus==PermissionStatus.denied){
+    permissionStatus=await location.requestPermission();
+    if(permissionStatus!=PermissionStatus.granted){
+    // TODO: Error Bar
+  }
+  }
+}
 }
 
 
