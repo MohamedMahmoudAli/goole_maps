@@ -19,14 +19,13 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   @override
   void initState() {
     initalCameraPosition = const CameraPosition(
-        zoom: 10.0, target: LatLng(31.227212467987233, 29.97218040398892));
+        zoom: 1.0, target: LatLng(31.227212467987233, 29.97218040398892));
     // initMapStyle();
     // initMarkers();
     locationService = LocationService();
     location = Location();
     setMyLocation();
-    
-    
+
     super.initState();
   }
 
@@ -40,6 +39,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   Set<Polyline> myPolylines = {};
   Set<Polygon> myPolygn = {};
   Set<Circle> myCircels = {};
+  bool fisrtcall = true;
   late LocationService locationService;
   late Location location;
 
@@ -197,24 +197,30 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   }
 
   void setMyCameraPostion(LocationData location, Marker myLocationMarker) {
-    CameraPosition cameraPosition = CameraPosition(
-    zoom: 15, target: LatLng(location.latitude!, location.longitude!));
-        googleMapController
-    ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-        myMarkers.add(myLocationMarker);
-        setState(() {});
+    if (fisrtcall) {
+      CameraPosition cameraPosition = CameraPosition(
+          zoom: 15, target: LatLng(location.latitude!, location.longitude!));
+      googleMapController
+          ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      myMarkers.add(myLocationMarker);
+      fisrtcall = false;
+      setState(() {});
+    } else {
+      googleMapController?.animateCamera(CameraUpdate.newLatLng(
+          LatLng(location.latitude!, location.longitude!)));
+      myMarkers.add(myLocationMarker);
+      setState(() {});
+    }
+
+    setState(() {});
   }
 
   Marker setLocationMarker(LocationData location) {
     var myLocationMarker = Marker(
-    markerId: const MarkerId("MyLocationMaker"),
-    position: LatLng(location.latitude!, location.longitude!));
+        markerId: const MarkerId("MyLocationMaker"),
+        position: LatLng(location.latitude!, location.longitude!));
     return myLocationMarker;
   }
-
-  
-
- 
 }
 
 // world view 0 -> 3
