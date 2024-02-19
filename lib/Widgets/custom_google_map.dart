@@ -17,7 +17,6 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     initalCameraPosition = const CameraPosition(zoom: 0, target: LatLng(0, 0));
     locationService = LocationService();
     updateCurrentLocation();
-    googleMapController=GoogleMapController();
     super.initState();
   }
 
@@ -36,7 +35,9 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
       children: [
         GoogleMap(
             zoomControlsEnabled: false,
-            onMapCreated: (controller) {},
+            onMapCreated: (controller) {
+              googleMapController;
+            },
             initialCameraPosition: initalCameraPosition),
         Positioned(
             left: 16,
@@ -47,14 +48,6 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
       ],
     );
   }
-
-  getLocationPermision() async {
-    var hasPermision = await location.hasPermission();
-    if (hasPermision != null) {
-      location.requestPermission();
-    }
-  }
-
   void updateCurrentLocation() async {
     try {
       var myLocation = await locationService.getCurrentLocation();
