@@ -200,12 +200,11 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
 
   void getLocationData() {
     // send stram if only the changed distance > 3 m
-    location.changeSettings(
-      distanceFilter: 3
-    );
+    // interval to see the distance every to seconds
+    location.changeSettings(distanceFilter: 3, interval: 2000);
     location.onLocationChanged.listen((location) {
       var myLocationMarker = Marker(
-          markerId: MarkerId("MyLocationMaker"),
+          markerId: const MarkerId("MyLocationMaker"),
           position: LatLng(location.latitude!, location.longitude!));
       CameraPosition cameraPosition = CameraPosition(
           zoom: 15, target: LatLng(location.latitude!, location.longitude!));
@@ -230,3 +229,9 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
 //city view 10 ->12
 //street view 13->17
 //buildings view 18 ->20
+
+
+//check the location services
+// check location permission
+// get the current location
+//view the current location on the map 
