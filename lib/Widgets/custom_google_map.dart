@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps/models/models.dart';
+import 'package:google_maps/utils/location_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
 
@@ -21,10 +22,11 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
         zoom: 10.0, target: LatLng(31.227212467987233, 29.97218040398892));
     // initMapStyle();
     // initMarkers();
+    locationService = LocationService();
     location = Location();
     setMyLocation();
-
-    checkAndRequestLocationService();
+    
+    
     super.initState();
   }
 
@@ -38,6 +40,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   Set<Polyline> myPolylines = {};
   Set<Polygon> myPolygn = {};
   Set<Circle> myCircels = {};
+  late LocationService locationService;
   late Location location;
 
   GoogleMapController? googleMapController;
@@ -171,57 +174,47 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     myCircels.add(circle);
   }
 
-  Future<void> checkAndRequestLocationService() async {
-    var isServicedEnabled = await location.serviceEnabled();
-    if (!isServicedEnabled) {
-      isServicedEnabled = await location.requestService();
-      if (!isServicedEnabled) {
-// to Do
-      }
-    }
-    checkAndRequestLocationPremission();
-  }
-
-  Future<bool> checkAndRequestLocationPremission() async {
-    var permissionStatus = await location.hasPermission();
-    if (permissionStatus == PermissionStatus.deniedForever) {
-      return false;
-    }
-    if (permissionStatus == PermissionStatus.denied) {
-      permissionStatus = await location.requestPermission();
-      if (permissionStatus != PermissionStatus.granted) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-    return true;
-  }
-
-  void getLocationData() {
-    // send stram if only the changed distance > 3 m
-    // interval to see the distance every to seconds
-    location.changeSettings(distanceFilter: 3, interval: 2000);
-    location.onLocationChanged.listen((location) {
-      var myLocationMarker = Marker(
-          markerId: const MarkerId("MyLocationMaker"),
-          position: LatLng(location.latitude!, location.longitude!));
-      CameraPosition cameraPosition = CameraPosition(
-          zoom: 15, target: LatLng(location.latitude!, location.longitude!));
-      googleMapController
-          ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-      myMarkers.add(myLocationMarker);
-      setState(() {});
-    });
-  }
+  // void updateMyLocation() async {
+  //   await locationService.checkAndRequestLocationService();
+  //   var hasPermission =
+  //       await locationService.checkAndRequestLocationPremission();
+  //   if (hasPermission) {
+  //           });
+  //   } else {}
+  // }
 
   void setMyLocation() async {
-    await checkAndRequestLocationService();
-    var hasPermission = await checkAndRequestLocationPremission();
+    await locationService.checkAndRequestLocationService();
+    var hasPermission =
+        await locationService.checkAndRequestLocationPremission();
+    location.changeSettings(distanceFilter: 2);
     if (hasPermission) {
-      getLocationData();
+      locationService.getRealTimeLocation((location) {
+        Marker myLocationMarker = setLocationMarker(location);
+        setMyCameraPostion(location, myLocationMarker);
+      });
     }
   }
+
+  void setMyCameraPostion(LocationData location, Marker myLocationMarker) {
+    CameraPosition cameraPosition = CameraPosition(
+    zoom: 15, target: LatLng(location.latitude!, location.longitude!));
+        googleMapController
+    ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+        myMarkers.add(myLocationMarker);
+        setState(() {});
+  }
+
+  Marker setLocationMarker(LocationData location) {
+    var myLocationMarker = Marker(
+    markerId: const MarkerId("MyLocationMaker"),
+    position: LatLng(location.latitude!, location.longitude!));
+    return myLocationMarker;
+  }
+
+  
+
+ 
 }
 
 // world view 0 -> 3
