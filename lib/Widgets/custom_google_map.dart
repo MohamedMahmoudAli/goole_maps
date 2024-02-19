@@ -174,8 +174,8 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   }
   
   void initCirecles() {
-    var circle= Circle(circleId: CircleId("1"),
-    center: LatLng(30.31546568720548, 31.188943683331996),
+    var circle= Circle(circleId: const CircleId("1"),
+    center: const LatLng(30.31546568720548, 31.188943683331996),
     radius: 500.0,
     fillColor: Colors.black.withOpacity(.5)
 
