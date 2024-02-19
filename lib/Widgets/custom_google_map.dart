@@ -199,6 +199,10 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   }
 
   void getLocationData() {
+    // send stram if only the changed distance > 3 m
+    location.changeSettings(
+      distanceFilter: 3
+    );
     location.onLocationChanged.listen((location) {
       var myLocationMarker = Marker(
           markerId: MarkerId("MyLocationMaker"),
