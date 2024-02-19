@@ -48,7 +48,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
         GoogleMap(
             circles: myCircels,
             // polylines: myPolylines,
-            // markers: myMarkers,
+            markers: myMarkers,
             polygons: myPolygn,
             zoomControlsEnabled: false,
             //mapType: MapType.terrain,
@@ -200,10 +200,15 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
 
   void getLocationData() {
     location.onLocationChanged.listen((location) {
+      var myLocationMarker = Marker(
+          markerId: MarkerId("MyLocationMaker"),
+          position: LatLng(location.latitude!, location.longitude!));
       CameraPosition cameraPosition = CameraPosition(
           zoom: 15, target: LatLng(location.latitude!, location.longitude!));
       googleMapController
           ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      myMarkers.add(myLocationMarker);
+      setState(() {});
     });
   }
 
