@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps/Widgets/custom_list_view.dart';
+import 'package:google_maps/models/place_model/place_model.dart';
+import 'package:google_maps/utils/google_maps_google_places_services.dart';
 import 'package:google_maps/utils/location_services.dart';
+import 'package:google_maps/widgets/customTextField.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -12,17 +16,39 @@ class CustomGoogleMapState extends StatefulWidget {
 
 class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   late CameraPosition initalCameraPosition;
+  late TextEditingController textEditingController;
+  late GoogleMapsPlacesServices googleMapsPlacesServices;
   Set<Marker> markers = {};
+  List<PlaceModel> places = [];
   @override
   void initState() {
+    googleMapsPlacesServices = GoogleMapsPlacesServices();
+    textEditingController = TextEditingController();
     initalCameraPosition = const CameraPosition(zoom: 0, target: LatLng(0, 0));
     locationService = LocationService();
     updateCurrentLocation();
+    fetchPredictions();
     super.initState();
+  }
+
+  void fetchPredictions() async {
+    textEditingController.addListener(() async {
+      if (textEditingController.text.isNotEmpty) {
+        var result = await googleMapsPlacesServices.getPredictions(
+            input: textEditingController.text);
+        places.clear();
+        places.addAll(result);
+        setState(() {});
+      } else {
+        places.clear();
+        setState(() {});
+      }
+    });
   }
 
   @override
   void dispose() {
+    textEditingController.dispose();
     super.dispose();
   }
 
@@ -43,6 +69,24 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
               updateCurrentLocation();
             },
             initialCameraPosition: initalCameraPosition),
+        Positioned(
+          top: 16,
+          left: 16,
+          right: 16,
+          child: Column(
+            children: [
+              CustomTextField(
+                textEditingController: textEditingController,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              CustomListView(
+                places: places,
+              )
+            ],
+          ),
+        )
       ],
     );
   }
@@ -66,6 +110,8 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     } catch (e) {}
   }
 }
+
+
 // create text field
 // listen to the text field
 // search places
