@@ -56,7 +56,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
       Marker marker = Marker(
           markerId: MarkerId("CurrentLocation"), position: currentLocation);
       CameraPosition cameraPosition =
-          CameraPosition(target: currentLocation, zoom: 14);
+          CameraPosition(target: currentLocation, zoom: 16);
       markers.add(marker);
       googleMapController
           .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
@@ -66,7 +66,7 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
     } catch (e) {}
   }
 }
-// create text field 
+// create text field
 // listen to the text field
 // search places
 // display the results
