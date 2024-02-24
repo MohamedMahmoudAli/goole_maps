@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps/Widgets/custom_list_view.dart';
+import 'package:google_maps/models/place_details_model/place_details_model.dart';
 import 'package:google_maps/models/place_model/place_model.dart';
 import 'package:google_maps/utils/google_maps_google_places_services.dart';
 import 'package:google_maps/utils/location_services.dart';
 import 'package:google_maps/widgets/customTextField.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:uuid/uuid.dart';
 
 class CustomGoogleMapState extends StatefulWidget {
   const CustomGoogleMapState({super.key});
@@ -20,8 +22,11 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
   late GoogleMapsPlacesServices googleMapsPlacesServices;
   Set<Marker> markers = {};
   List<PlaceModel> places = [];
+  late Uuid uuid;
+  String? sessionToken;
   @override
   void initState() {
+    uuid = const Uuid();
     googleMapsPlacesServices = GoogleMapsPlacesServices();
     textEditingController = TextEditingController();
     initalCameraPosition = const CameraPosition(zoom: 0, target: LatLng(0, 0));
@@ -33,9 +38,10 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
 
   void fetchPredictions() async {
     textEditingController.addListener(() async {
+      sessionToken ??= uuid.v4();
       if (textEditingController.text.isNotEmpty) {
         var result = await googleMapsPlacesServices.getPredictions(
-            input: textEditingController.text);
+            input: textEditingController.text, sessionToken: sessionToken!);
         places.clear();
         places.addAll(result);
         setState(() {});
@@ -83,6 +89,13 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
               ),
               CustomListView(
                 places: places,
+                googleMapsPlacesServices: googleMapsPlacesServices,
+                onPlaceSelect: (placeDetailsModel) {
+                  textEditingController.clear();
+                  places.clear();
+                  sessionToken=null;
+                  setState(() {});
+                },
               )
             ],
           ),
@@ -98,7 +111,8 @@ class _CustomGoogleMapStateState extends State<CustomGoogleMapState> {
       LatLng currentLocation =
           LatLng(myLocation.latitude!, myLocation.longitude!);
       Marker marker = Marker(
-          markerId: MarkerId("CurrentLocation"), position: currentLocation);
+          markerId: const MarkerId("CurrentLocation"),
+          position: currentLocation);
       CameraPosition cameraPosition =
           CameraPosition(target: currentLocation, zoom: 16);
       markers.add(marker);
