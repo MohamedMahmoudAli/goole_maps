@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps/Widgets/custom_list_view.dart';
-import 'package:google_maps/models/place_details_model/place_details_model.dart';
 import 'package:google_maps/models/place_model/place_model.dart';
 import 'package:google_maps/utils/google_maps_google_places_services.dart';
 import 'package:google_maps/utils/location_services.dart';
